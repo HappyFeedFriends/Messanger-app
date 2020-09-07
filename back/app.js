@@ -1,6 +1,5 @@
 var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
@@ -20,5 +19,10 @@ app.use(session({
 })); 
 
 app.use('/api', apiRouter);
+
+app.use(function(req, res, next){
+  res.status(404).send(' ');
+});
+
 
 module.exports = app;
