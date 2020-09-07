@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "init": "node node init/database"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,6 +17,7 @@
     "morgan": "~1.9.1",
     "pbkdf2-password": "^1.2.1",
     "pg": "^8.3.3",
+    "validator": "^13.1.1",
     "vue": "^2.6.12"
   },
   "devDependencies": {

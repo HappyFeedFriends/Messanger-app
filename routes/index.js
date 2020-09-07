@@ -33,6 +33,22 @@ router.get('/login', function(req, res){
   res.render('login');
 });
 
+router.get('/register', function(req, res){
+  res.render('register');
+});
+
+router.post('/register', async function(req, res){
+  await util.register(req.body.username, req.body.password,req.body.password_copy,req.body.email,(err) => {
+    if (err){
+      req.session.error = err.message;
+      res.redirect('/register')
+      return;
+    }
+    req.session.success = 'Вы были зарегистрированы!';
+    res.redirect('/');
+  });
+});
+
 router.post('/login', function(req, res){
   util.authenticate(req.body.username, req.body.password, function(err, user){
     if (user) {
