@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, StrictMode } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {
+  Route,
+  Switch,
+  Redirect,
+  withRouter,
+  Link,
+} from "react-router-dom"
+
+import register from './routes/register';
+import Header from './templates/header';
+
+class App extends Component {
+  render() {
+    const { history } = this.props
+
+    return (
+      <StrictMode className="App">
+
+        <Header />
+
+        <Switch>
+          <Route history={history} path='/register' component={register} />
+        </Switch>
+
+      </StrictMode>
+    );
+  }
 }
 
-export default App;
+export default withRouter(App)
