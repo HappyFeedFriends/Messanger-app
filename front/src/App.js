@@ -8,21 +8,44 @@ import {
   Link,
 } from "react-router-dom"
 
-import register from './routes/register';
+import Forms from './components/Forms';
 import Header from './templates/header';
 
 class App extends Component {
+
+  constructor(props){
+    super(props)
+
+
+    this.state = {
+      bIsOpenForms:false,
+    }
+  }
+
+  SetStateForms(bState){
+    this.setState({
+      bIsOpenForms: bState
+    })
+
+  }
+
+  
+
   render() {
     const { history } = this.props
-
     return (
-      <StrictMode className="App">
+      <StrictMode>
 
-        <Header />
+        <Header StateFormToggle={(bState) => this.SetStateForms(bState)} />
+        
+        {this.state.bIsOpenForms ? <Forms/> : ''}
 
-        <Switch>
-          <Route history={history} path='/register' component={register} />
-        </Switch>
+
+        {/* <Switch>
+          <Route history={history} path='/signup' component={SignUp} />
+        </Switch> */}
+
+
 
       </StrictMode>
     );

@@ -8,7 +8,12 @@ import {
   Link,
 } from "react-router-dom"
 
-export default () => {
+export default (props) => {
+
+    function StateFormOpen(e){
+        props.StateFormToggle(true)
+    }
+
     return (
         <header className="App-header">
             <img src="/img/logo.png" className="logo"/>
@@ -19,15 +24,15 @@ export default () => {
 
             <ul class="ul_links row">
                 <li className="row hover_separator">
-                    <Link className='SectionNavigation-Item' to='/register'>
+                    <div className='SectionNavigation-Item' onClick={StateFormOpen} to='/signup'>
                         <span className='row Section-Title register'>Зарегистрироваться</span>
-                    </Link>       
+                    </div>       
                 </li>
 
                 <li>
-                    <Link className='SectionNavigation-Item' to='/register'>
+                    <div className='SectionNavigation-Item' to='/signin'>
                         <span className='Section-Title login'>Войти</span>
-                    </Link>       
+                    </div>       
                 </li>
             </ul>
 
