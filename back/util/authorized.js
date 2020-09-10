@@ -5,18 +5,18 @@ module.exports.authenticate = function(name, pass, fn) {
 }
 
 module.exports.register = async function(name, pass,pass_copy,email,fn) {
-    if (pass !== pass_copy) fn(  Error('Пароли не совпадают!'));
+    if (pass !== pass_copy) {fn(  Error('0')); return}
 
-    if (!validator.isEmail(email)) fn( Error('Введите правильный почтовый адрес!'));
+    if (!validator.isEmail(email)) {fn( Error('1')); return}
 
     if (!validator.isLength(pass,{
         min:6,
-    })) fn(  Error('Пароль должен быть не менее 6 символов!') );
-
+    })) {fn(  Error('2') ); return}
+    console.log(name)
     if (!validator.isLength(name,{
         min:4,
-        max:32,
-    })) return Error('Логин должен быть не меньше 4 символов и не больше 16');
+        max:31,
+    })){ fn( Error('3') ); return};
     const hashPassword = sha256(pass)
 
     await db.query(`INSERT INTO main."user"(
@@ -27,5 +27,5 @@ module.exports.register = async function(name, pass,pass_copy,email,fn) {
             email,
             name,
         ]) 
-        fn();
+    fn();
 }

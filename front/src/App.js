@@ -18,7 +18,7 @@ class App extends Component {
 
 
     this.state = {
-      bIsOpenForms:false,
+      bIsOpenForms:true,
     }
   }
 
