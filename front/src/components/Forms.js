@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import cfg from '../config/api.json'
-
-class SignUp extends Component {
+import SignUp from '../components/form_signup';
+import Loader from './loader.js';
+import SignIn from './form_signIn.js';
+class Forms extends Component {
 
     constructor(props){
         super(props)
         this.state = {
             error:'',
+            Loading:false,
+            FormState:0,
             signUpData:{
                 username:'',
                 password:'',
@@ -21,6 +25,11 @@ class SignUp extends Component {
     async handleSubmit(event) {
         event.preventDefault();
 
+        this.setState({
+            error:'',
+            Loading:true,
+        });
+
         const api_path = cfg.api_path + 'signup';
         let response = await fetch(api_path, {
             method: 'POST',
@@ -31,16 +40,14 @@ class SignUp extends Component {
 
         });
         const err = await response.text();
-        console.log('error ',err)
         if (!!err){
             this.setState({
                 error:err,
             });
-            return
         }
 
         this.setState({
-            error:'',
+            Loading:false,
         });
 
     }
@@ -53,70 +60,33 @@ class SignUp extends Component {
         });
     }
 
+    OnToggleForm(state){
+        this.setState({FormState:state})
+    }
+
     render() {
       return (
         <div class="ModalIconForms">
-            <form onSubmit={(e) => this.handleSubmit(e)}>
+            <div className={this.state.Loading && 'Loading'}>
+                <div  className="CloseForms" onClick={(e) => this.props.CloseForms}>
+                    <div class="bar1"/>
+                    <div class="bar2"/>
+                </div>
+
                 <div className="FormHeader row">
-                    <h2>Создание Аккаунта</h2>
-                    <h2>Авторизация</h2> 
+                    <h2 id="h2" onClick={() => this.OnToggleForm(1)}>Создание Аккаунта</h2>
+                    <h2 id="h3" onClick={() => this.OnToggleForm(0)}>Авторизация</h2>  
                 </div>
-                <div className="FormContent column">
-
-                    <div>
-                        <span>Имя пользователя</span>
-                        <div className="inputContainer username"><input onChange={(e) => this.OnChangeInput('username',e)}  required type="text" name="username"></input></div>
-                        {this.state.error == '3' && 
-                            <span className="SignUpError" >Введено некорректное имя аккаунта. Имя аккаунта должно быть длиной от 4 до 31 символов.</span>
-                        } 
-                    </div>
-
-                    <div>
-                        <span>Дата рождения</span>
-                        <div className="inputContainer none"><input onChange={(e) => this.OnChangeInput('dateBirth',e)} required type="date" name="dateBirth"></input></div>
-                    </div>
-
-                    <div>
-                        <span>Пол</span>
-                        <div className="inputContainer none row gender">
-                            <label><input onChange={(e) => this.OnChangeInput('gender',e)} required name="gender" type="radio" value="0"/>Мужской</label>
-                            <label><input onChange={(e) => this.OnChangeInput('gender',e)} required name="gender" type="radio" value="1"/>Женский</label>
-                        </div>
-                    </div>
-
-                    <div className="password_container">
-                        <span>Пароль</span>
-                        <div className="inputContainer password"><input onChange={(e) => this.OnChangeInput('password',e)} required type="password" name="password"></input></div>
-                        {this.state.error == '2' && 
-                            <span className="SignUpError" >Введён некорректный пароль. Пароль должен быть длиной от 6 символов.</span>
-                        } 
-                    </div>
-
-                    <div>
-                        <span>Повторите пароль</span>
-                        <div className="inputContainer password"><input onChange={(e) => this.OnChangeInput('password_repeat',e)} required type="password" name="password_repeat"></input></div>
-                        {this.state.error == '0' && 
-                            <span className="SignUpError" >Пароли не совпадают!</span>
-                        } 
-                    </div>
-
-                    <div>
-                        <span>Адрес электронной почты</span>
-                        <div className="inputContainer email"><input onChange={(e) => this.OnChangeInput('email',e)} required type="email" name="email"></input></div>
-                        {this.state.error == '1' && 
-                            <span className="SignUpError" >Введён некоректный адрес электронной почты!</span>
-                        } 
-                    </div>
-
-                    <div>
-                        <div className="inputContainer"><input type="submit" value="Создать"></input></div>
-                    </div>
-
-                </div>
-            </form>
+                {this.state.Loading && <Loader/>}
+                {
+                    this.state.FormState == 1 
+                    ? <SignUp OnChangeInput={(key,event) => this.OnChangeInput(key,event)} handleSubmit={(e) => this.handleSubmit(e)} error={this.state.error}/>
+                    : <SignIn/>
+                }
+            </div>
         </div>
       );
     }
 }
 
-export default SignUp;
+export default Forms;
