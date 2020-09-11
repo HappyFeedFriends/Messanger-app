@@ -58,9 +58,11 @@ class SignUp extends Component {
         <div class="ModalIconForms">
             <form onSubmit={(e) => this.handleSubmit(e)}>
                 <div className="FormHeader row">
-                    <h2>Создание Аккаунта</h2> 
+                    <h2>Создание Аккаунта</h2>
+                    <h2>Авторизация</h2> 
                 </div>
                 <div className="FormContent column">
+
                     <div>
                         <span>Имя пользователя</span>
                         <div className="inputContainer username"><input onChange={(e) => this.OnChangeInput('username',e)}  required type="text" name="username"></input></div>
