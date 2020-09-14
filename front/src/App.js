@@ -1,4 +1,4 @@
-import React, { Component, StrictMode } from 'react';
+import React, { Component, StrictMode, Suspense  } from 'react';
 
 import {
   Route,
@@ -8,17 +8,16 @@ import {
   Link,
 } from "react-router-dom"
 
-import Forms from './components/Forms';
-import Header from './templates/header';
-
+import Forms from './components/Forms.js';
+import Loader from './components/loader.js';
+// import Header from './components/templates/header.js';
+const Header = React.lazy(() => import('./components/templates/header.js'));
 class App extends Component {
 
   constructor(props){
     super(props)
-
-
     this.state = {
-      bIsOpenForms:true,
+      bIsOpenForms:false,
     }
   }
 
@@ -29,25 +28,29 @@ class App extends Component {
 
   }
 
-  
+  componentDidMount() {
+    document.title = 'Chat RUS'
+  }
 
   render() {
     const { history } = this.props
     return (
-      <StrictMode>
+      <Suspense fallback={<Loader/>}>
+        <StrictMode>
 
-        <Header StateFormToggle={(bState) => this.SetStateForms(bState)} />
-        
-        {this.state.bIsOpenForms ? <Forms/> : ''}
-
-
-        {/* <Switch>
-          <Route history={history} path='/signup' component={SignUp} />
-        </Switch> */}
+          <Header StateFormToggle={(bState) => this.SetStateForms(bState)} />
+          
+          {this.state.bIsOpenForms ? <Forms StateFormToggle={(bState) => this.SetStateForms(bState)} /> : ''}
 
 
+          {/* <Switch>
+            <Route history={history} path='/signup' component={SignUp} />
+          </Switch> */}
 
-      </StrictMode>
+
+
+        </StrictMode>
+      </Suspense>
     );
   }
 }

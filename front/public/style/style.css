@@ -356,6 +356,7 @@ header{
       position: absolute;
       right: 0;
       top:0;
+      cursor: pointer;
   }
 
   .bar1, .bar2 {
@@ -370,9 +371,4 @@ header{
 }
 .bar2 {
     transform: rotate(45deg) translate(-2px, 2px);
-}
-
-
-
-
-  
+}  

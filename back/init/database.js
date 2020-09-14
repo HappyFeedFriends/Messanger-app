@@ -10,6 +10,7 @@ let client = new Client({
 });
 client.connect();
 async function CreateDB(){
+    await client.query(`DROP DATABASE IF EXISTS "${cfg.database}"`);
     await client.query(`CREATE DATABASE "${cfg.database}"
     WITH 
     OWNER = "${cfg.user}"
@@ -28,11 +29,15 @@ async function CreateTables(){
 }
 
 (async () => {
-    console.log(`create database "${cfg.database}"`)
-    await CreateDB();
-    await CreateTables();
-    await client.end();
-    console.log('database creating!')
+    try{
+        console.log(`create database "${cfg.database}"`)
+        await CreateDB();
+        await CreateTables();
+        await client.end();
+        console.log('database creating!')
+    }catch(err){
+        console.error(err);
+    }
     
     process.exit(1)
 })();

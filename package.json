@@ -6,8 +6,5 @@
     "server": "npm start --prefix back",
     "client": "npm start --prefix front"
   },
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "method-override": "^3.0.0"
-  }
+  "dependencies": {}
 }
