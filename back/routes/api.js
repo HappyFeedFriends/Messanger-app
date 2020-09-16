@@ -113,8 +113,8 @@ router.post('/auth/signup',async function(req, res){
         username,
   ]);
 
-  const email_count = response.rows.filter(word => word.email.toLowerCase() == email.toLowerCase()).length;
-  const username_count = response.rows.filter(word => word.login.toLowerCase() == login.toLowerCase()).length;
+  const email_count = response.rows.filter(row => row.email.toLowerCase() == email.toLowerCase()).length;
+  const username_count = response.rows.filter(row => row.login.toLowerCase() == username.toLowerCase()).length;
 
   if (email_count >  0){
     data.statusCode = 1;

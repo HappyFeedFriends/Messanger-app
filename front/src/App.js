@@ -1,58 +1,65 @@
-import React, { Component, StrictMode, Suspense  } from 'react';
+import React, { Component, StrictMode  } from 'react';
+import { connect } from 'react-redux';
 
 import {
-  Route,
-  Switch,
-  Redirect,
+  // Route,
+  // Switch,
+  // Redirect,
   withRouter,
-  Link,
+  // Link,
 } from "react-router-dom"
 
 import Forms from './components/Forms.js';
-import Loader from './components/loader.js';
-// import Header from './components/templates/header.js';
-const Header = React.lazy(() => import('./components/templates/header.js'));
+import Preloader from './components/preloader.js';
+import Header from './components/templates/header.js';
+import cfg from './config/api.json'
+import { ChangeFormState, ChangeLoadingState } from './redux/actions.js';
+
 class App extends Component {
+  componentDidMount() {
+    document.title = 'Chat RUS'
 
-  constructor(props){
-    super(props)
-    this.state = {
-      bIsOpenForms:false,
-    }
-  }
 
-  SetStateForms(bState){
-    this.setState({
-      bIsOpenForms: bState
+    fetch(cfg.api_url + 'user',{credentials:'include'})
+    .then(response => response.json())
+    .then(res => {
+      this.props.ChangeLoadingState(false)
+    })
+    .catch((reason) => {
+      this.props.ChangeLoadingState(false)
     })
 
   }
 
-  componentDidMount() {
-    document.title = 'Chat RUS'
-  }
-
   render() {
     const { history } = this.props
-    return (
-      <Suspense fallback={<Loader/>}>
+    return this.props.Loading
+    ? <Preloader/> 
+    :(
         <StrictMode>
 
-          <Header StateFormToggle={(bState) => this.SetStateForms(bState)} />
+          <Header/>
           
-          {this.state.bIsOpenForms ? <Forms StateFormToggle={(bState) => this.SetStateForms(bState)} /> : ''}
+          {this.props.formOpen && <Forms />}
 
 
           {/* <Switch>
             <Route history={history} path='/signup' component={SignUp} />
           </Switch> */}
 
-
-
         </StrictMode>
-      </Suspense>
     );
   }
 }
 
-export default withRouter(App)
+const mapStateToProps = state => {
+  return { 
+      Loading:state.app.IsLoading, 
+      formOpen:state.app.IsOpenForms
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {ChangeFormState,ChangeLoadingState}
+)(withRouter(App))

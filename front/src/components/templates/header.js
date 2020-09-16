@@ -1,65 +1,35 @@
 import React, { Component } from 'react';
-import {
-  Route,
-  Switch,
-  Redirect,
-  withRouter,
-  Link,
-} from "react-router-dom"
-import cfg from '../../config/api.json'
+import { connect } from 'react-redux';
+import { ChangeFormState } from '../../redux/actions';
 
- 
-export default class Header extends Component {
-
-    state = {
-        userName:null,
-        auth:false,
+class Header extends Component {
+    StateFormOpen(index){
+        this.props.ChangeFormState(true,index)
     }
-
-    StateFormOpen(e){
-        this.props.StateFormToggle(true)
-    }
-
-    componentDidMount () {
-        const _this = this
-        fetch(cfg.api_url + 'user',{credentials: 'include'})
-        .then(function(response) {
-            response.json().then(function(json) {
-                console.log((json))
-                setInterval(() => {
-                    _this.setState({
-                        auth:true,
-                    })    
-                }, 2500);
-            })
-        }).catch(function(err) {
-          console.log(err)
-        });
-      }
 
     render(){
-        return this.state.auth ? (
+        return (
             <header className="App-header">
-                <img src="/img/logo.png" className="logo"/>
+                <img alt="" src="/img/logo.png" className="logo"/>
 
                 <ul>
 
                 </ul>
 
-                <ul class="ul_links row">
+                <ul className="ul_links row">
                     <li className="row hover_separator">
-                        <div className='SectionNavigation-Item' onClick={(e) => this.StateFormOpen()} to='/signup'>
+                        <div className='SectionNavigation-Item' onClick={(e) => this.StateFormOpen(1)}>
                             <span className='row Section-Title register'>Зарегистрироваться</span>
                         </div>       
                     </li>
 
-                    {/* <li>
-                        <div className='SectionNavigation-Item' to='/signin'>
+                    <li>
+                        <div className='SectionNavigation-Item' onClick={(e) => this.StateFormOpen(0)}>
                             <span className='Section-Title login'>Войти</span>
                         </div>       
-                    </li> */}
+                    </li>
 
-                    <li>
+                    {/* <li>
                         <div className="UserProfile">
                             <div>
                                 <span>HappyFeedFriends</span>
@@ -68,11 +38,16 @@ export default class Header extends Component {
                                 <img src={'../user_avatars/'} alt=""/>
                             </div>
                         </div>
-                    </li>
+                    </li> */}
                 </ul>
 
 
             </header>
-        ) : null;
+        );
     }
 };
+
+export default connect(
+    null,
+    {ChangeFormState},
+)(Header)
