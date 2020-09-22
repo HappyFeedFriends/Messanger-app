@@ -211,10 +211,7 @@ body > #root{
     display: flex;
     flex-direction: row;
 }
-.ul_links{
-    /* padding-bottom: 10px; */
-    padding-top: 10px;
-}
+
 .ul_links > li{
     transition: .33s;
 }
@@ -266,6 +263,8 @@ header{
 
 .logo{
     width: 52px;
+    align-self: center;
+    justify-self: center;
     height: 40px;
 }
 .SectionNavigation-Item,
@@ -303,3 +302,48 @@ header{
 .bar2 {
     transform: rotate(45deg) translate(-2px, 2px);
 }  
+
+.user_avatar{
+    width: 36px;
+    height: 36px;
+    border: 1px solid black;
+    margin-right: 10px;
+}
+
+.user_settings{
+    width: 16px;
+    height: 16px;
+    margin-left: 5px;
+}
+
+.user_settings > img,
+.user_avatar > img{
+    width: 100%;
+    height: 100%;
+}
+.UserProfile{
+    margin-bottom: 5px;
+    margin-top: 5px;
+    align-self: center;
+    justify-self: center; 
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+.UserName{
+    justify-content: center;
+    align-items: center;
+}
+
+.UserName > span{
+    color: black;
+}
+.ul_links > li .UserName span:hover{
+    color: #0088cc;
+}
+.ul_links > li .UserName span{
+    color: black;
+    transition: .33s;
+    letter-spacing: 0;
+    font-family: 'Rubik', sans-serif;
+}

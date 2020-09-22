@@ -1,44 +1,53 @@
-import React, { Component } from 'react';
+import React, { Component, StrictMode } from 'react';
 import { connect } from 'react-redux';
 import { ChangeFormState } from '../../redux/actions';
+import { Link } from "react-router-dom"
+
 
 class Header extends Component {
-    StateFormOpen(index){
-        this.props.ChangeFormState(true,index)
+    ComponentHeader(){
+        if (this.props.is_auth) {
+            return (    
+            <li>
+                <Link to="/profile" className="UserProfile row">
+                    <div className="user_avatar">
+                        <img src={this.props.avatarURL} alt=""/>
+                    </div>
+                    <div className="row UserName">
+                        <span>{this.props.username}</span>
+                    </div>
+                    <div className="user_settings row"> 
+                        <img src="img/settings.png" />
+                    </div>
+                </Link>
+            </li>
+        )}
+
+        return (
+            <StrictMode>
+                <li className="row hover_separator">
+                    <div className='SectionNavigation-Item' onClick={(e) => this.props.ChangeFormState(true,1)}>
+                        <span className='row Section-Title register'>Зарегистрироваться</span>
+                    </div>       
+                </li>
+                <li>
+                    <div className='SectionNavigation-Item' onClick={(e) => this.props.ChangeFormState(true,0)}>
+                        <span className='Section-Title login'>Войти</span>
+                    </div>       
+                </li>
+            </StrictMode>
+        )
     }
 
     render(){
         return (
             <header className="App-header">
-                <img alt="" src="/img/logo.png" className="logo"/>
-
-                <ul>
-
-                </ul>
+                <Link to="/" ><img alt="" src="/img/logo.png" className="logo"/></Link>
 
                 <ul className="ul_links row">
-                    <li className="row hover_separator">
-                        <div className='SectionNavigation-Item' onClick={(e) => this.StateFormOpen(1)}>
-                            <span className='row Section-Title register'>Зарегистрироваться</span>
-                        </div>       
-                    </li>
 
-                    <li>
-                        <div className='SectionNavigation-Item' onClick={(e) => this.StateFormOpen(0)}>
-                            <span className='Section-Title login'>Войти</span>
-                        </div>       
-                    </li>
+                    {this.ComponentHeader()}
 
-                    {/* <li>
-                        <div className="UserProfile">
-                            <div>
-                                <span>HappyFeedFriends</span>
-                            </div>
-                            <div>
-                                <img src={'../user_avatars/'} alt=""/>
-                            </div>
-                        </div>
-                    </li> */}
                 </ul>
 
 
@@ -47,7 +56,15 @@ class Header extends Component {
     }
 };
 
+const mapStateToProps = state => {
+    return { 
+        username:state.user.username, 
+        avatarURL:state.user.avatarURL, 
+        is_auth:state.user.is_auth,
+    };
+};
+
 export default connect(
-    null,
+    mapStateToProps,
     {ChangeFormState},
 )(Header)

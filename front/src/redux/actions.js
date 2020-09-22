@@ -1,4 +1,4 @@
-import {INITIALIZE_APP, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN,SIGNIN_CHANGE_PASSWORD,SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME,SIGNUP_CHANGE_GENDER,SIGNUP_CHANGE_DATE_BIRTH, APP_CHANGE_FORM_STATE, APP_CHANGE_ERROR} from './types'
+import {INITIALIZE_APP, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN,SIGNIN_CHANGE_PASSWORD,SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME,SIGNUP_CHANGE_GENDER,SIGNUP_CHANGE_DATE_BIRTH, APP_CHANGE_FORM_STATE, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH} from './types'
 import cfg from '../config/api.json'
 import Cookies from 'universal-cookie'
 const cookies = new Cookies()
@@ -105,12 +105,35 @@ export function SignInChangePassword(value){
     }
 }
 
+// USER DATA
+
+export function UserDataChangeUserName(value){
+    return {
+        type:USER_CHANGE_USERNAME,
+        payload:value,
+    }
+}
+
+export function UserDataChangeAvatarURL(value){
+    return {
+        type:USER_CHANGE_AVATAR,
+        payload:value,
+    }
+}
+
+export function UserDataChangeIsAuth(value){
+    return {
+        type:USER_CHANGE_IS_AUTH,
+        payload:value,
+    }
+}
+
+
 // REQUESTS
 
 export function RequestSignUp(){
     return async (dispatch, getState) => {
         const { signUpForm } = getState()
-        console.log(signUpForm)
         dispatch(ChangeFormLoadingState(true))
         dispatch(ChangeErrorAPP(0,''))
         const response = await (await fetch(cfg.api_auth + 'signup',{
@@ -122,6 +145,7 @@ export function RequestSignUp(){
         })).json()
         dispatch(ChangeErrorAPP(response.errorCode,response.error[0]))
         dispatch(ChangeFormLoadingState(false))
+         window.location.reload()
     }
 }
 
@@ -137,7 +161,6 @@ export function RequestSignIn(){
             },
             body: JSON.stringify(signInForm),
         })).json()
-        console.log(response)
         dispatch(ChangeErrorAPP(response.errorCode,response.error[0]))
         dispatch(ChangeFormLoadingState(false))
 

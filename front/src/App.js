@@ -2,8 +2,8 @@ import React, { Component, StrictMode  } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  // Route,
-  // Switch,
+  Route,
+  Switch,
   // Redirect,
   withRouter,
   // Link,
@@ -13,7 +13,8 @@ import Forms from './components/Forms.js';
 import Preloader from './components/preloader.js';
 import Header from './components/templates/header.js';
 import cfg from './config/api.json'
-import { ChangeFormState, ChangeLoadingState } from './redux/actions.js';
+import { ChangeFormState, ChangeLoadingState, UserDataChangeAvatarURL, UserDataChangeUserName, UserDataChangeIsAuth } from './redux/actions.js';
+import Profile from './components/profile.js';
 
 class App extends Component {
   componentDidMount() {
@@ -23,10 +24,15 @@ class App extends Component {
     fetch(cfg.api_url + 'user',{credentials:'include'})
     .then(response => response.json())
     .then(res => {
-      this.props.ChangeLoadingState(false)
+        this.props.UserDataChangeAvatarURL(res.avatar_url)
+        this.props.UserDataChangeUserName(res.username)
+        this.props.UserDataChangeIsAuth(true)
     })
-    .catch((reason) => {
-      this.props.ChangeLoadingState(false)
+    .finally(() => {
+      setTimeout(() => {
+        this.props.ChangeLoadingState(false)
+      },0)
+
     })
 
   }
@@ -43,9 +49,9 @@ class App extends Component {
           {this.props.formOpen && <Forms />}
 
 
-          {/* <Switch>
-            <Route history={history} path='/signup' component={SignUp} />
-          </Switch> */}
+          <Switch>
+            <Route history={history} path='/profile' component={Profile} />
+          </Switch>
 
         </StrictMode>
     );
@@ -55,11 +61,11 @@ class App extends Component {
 const mapStateToProps = state => {
   return { 
       Loading:state.app.IsLoading, 
-      formOpen:state.app.IsOpenForms
+      formOpen:state.app.IsOpenForms,
   };
 };
 
 export default connect(
   mapStateToProps,
-  {ChangeFormState,ChangeLoadingState}
+  {ChangeFormState,ChangeLoadingState,UserDataChangeAvatarURL,UserDataChangeUserName,UserDataChangeIsAuth}
 )(withRouter(App))

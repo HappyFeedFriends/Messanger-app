@@ -21,3 +21,10 @@ export const InitializeAPPDefault = {
     errorCode:0, // unique code for error 
     error:'', // description for error
 }
+
+
+export const UserDataDefault = {
+    username:'',
+    avatarURL:'',
+    is_auth:false,
+}

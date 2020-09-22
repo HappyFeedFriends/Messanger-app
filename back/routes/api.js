@@ -15,7 +15,7 @@ router.post('/auth/signin',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 20
     data.error = ['Ошибка авторизации. Пользователь с данным E-MAIL-ом не зарегистрирован'];
-    send.send(data)
+    res.send(data)
     return;
   }
 
@@ -26,32 +26,31 @@ router.post('/auth/signin',async function(req, res){
         username,
         sha256(password),
   ])).rows;
-
   if (userFind.length < 1) {
     data.statusCode = 1;
     data.errorCode = 20
     data.error = ['Ошибка авторизации. Пользователь с заданным логином и паролем не существует'];
-    send.send(data)
+    res.send(data)
     return;
   }
 
   data.data = {
     token:jwt.sign({id:userFind[0].id}, SECRET_KEY)
   } 
-  send.send(data)
+  res.send(data)
   
   
 
 });
 router.post('/auth/signup',async function(req, res){
-  const send = res.status(200)
+  const send = res
   const data = { ...ExampleJsonResponse }
   const {username, password, password_repeat,dateBirth,gender,email} = req.body;
   if (password !== password_repeat) {
     data.statusCode = 1;
     data.errorCode = 1
     data.error = ['Ошибка регистрации. Пароли не совпадают!'];
-    send.send(data)
+    res.send(data)
     return;
   }
 
@@ -59,7 +58,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 2
     data.error = ['Введён некорректный E-MAIL!'];
-    send.send(data)
+    res.send(data)
     return;   
   } 
 
@@ -67,7 +66,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 3
     data.error = ['Введён некорректный пароль. Пароль должен быть длиной от 6 символов.'];
-    send.send(data)
+    res.send(data)
     return;   
   }
 
@@ -78,7 +77,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 4
     data.error = ['Введено некорректное имя пользователя. Имя пользователя должно быть длиной от 4 до 31 символов'];
-    send.send(data)
+    res.send(data)
     return;   
   }
 
@@ -86,7 +85,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 4
     data.error = ['Введено некорректное имя пользователя. Имя пользователя не должно использовать кириллицу или начинаться с цифры'];
-    send.send(data)
+    res.send(data)
     return;   
   }
 
@@ -94,7 +93,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 5
     data.error = ['Введён некорректный пол.'];
-    send.send(data)
+    res.send(data)
     return;  
   }
 
@@ -102,7 +101,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 6
     data.error = ['Введёно некорректная дата рождения!'];
-    send.send(data)
+    res.send(data)
     return; 
   }
 
@@ -120,7 +119,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 2
     data.error = ['Данный почтовый адрес уже используется!'];
-    send.send(data)
+    res.send(data)
     return; 
   }
 
@@ -128,7 +127,7 @@ router.post('/auth/signup',async function(req, res){
     data.statusCode = 1;
     data.errorCode = 4
     data.error = ['Данное имя пользователя уже используется!'];
-    send.send(data)
+    res.send(data)
     return; 
   }
   
@@ -142,10 +141,7 @@ router.post('/auth/signup',async function(req, res){
         gender,
         dateBirth,
   ]);
-  data.data = {
-    id:1,
-  }
-  send.send(data)
+  res.send(data)
 
 });
  
@@ -171,7 +167,7 @@ router.get('/v1/user',async function(req, res){
 	where id = $1`,[
     userID,
   ]);
-  console.log(data)
+  response.rows[0].avatar_url = 'img/user_avatars/' + response.rows[0].avatar_url
   res.status(200).send(response.rows[0]);
 });
 

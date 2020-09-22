@@ -1,6 +1,8 @@
 import {combineReducers } from 'redux';
-import { signInDefault, signUpDefault,InitializeAPPDefault } from './default';
-import { APP_CHANGE_FORM_STATE, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN, SIGNIN_CHANGE_PASSWORD, SIGNUP_CHANGE_DATE_BIRTH, SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_GENDER, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME, APP_CHANGE_ERROR } from './types';
+import { UserDataChangeAvatarURL,UserDataChangeUserName,UserDataChangeIsAuth,ChangeLoadingState } from './actions';
+import { signInDefault, signUpDefault,InitializeAPPDefault, UserDataDefault } from './default';
+import { APP_CHANGE_FORM_STATE, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN, SIGNIN_CHANGE_PASSWORD, SIGNUP_CHANGE_DATE_BIRTH, SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_GENDER, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH, INITIALIZE_APP } from './types';
+import cfg from '../config/api.json'
 
 function APPReducer(state = InitializeAPPDefault,actions){
     switch (actions.type) {
@@ -48,8 +50,23 @@ function signUpReducer(state = signUpDefault,actions){
     }
 }
 
+function UserReducer(state = UserDataDefault,actions){
+    switch (actions.type) {
+        case USER_CHANGE_USERNAME:
+            return {...state,username:actions.payload}
+        case USER_CHANGE_AVATAR:
+            return {...state,avatarURL:actions.payload}
+        case USER_CHANGE_IS_AUTH:
+            return {...state,is_auth:actions.payload}
+        default:
+            return state;
+    }
+}
+
+
 export const rootReducer = combineReducers({
     signInForm:SignInReducer,
     signUpForm:signUpReducer,
     app:APPReducer,
+    user:UserReducer,
 })
