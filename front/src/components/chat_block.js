@@ -2,10 +2,24 @@ import React,{ Component } from 'react';
 
 class ChatSelector extends Component{
 
+    constructor(s){
+        super(s)
+
+        this.state = {
+            select:false,
+        }
+    }
+
+    SelectChat(){
+        this.setState({
+            select:!this.state.select,
+        })
+    }
+
 
     render(){
         return (
-            <div className="ChatContainer row">
+            <div onClick={() => this.SelectChat()} className={ "ChatContainer row " + (this.state.select ? 'select' : '' ) }>
                 <div className="UserIcon">
                     <img src="img/user_avatars/default.png"/>
                 </div>
@@ -17,7 +31,7 @@ class ChatSelector extends Component{
                         </span>
 
                         <span>
-                            11:32
+                            00:00
                         </span>
                     </div>
                     <div className="User_last_message">
