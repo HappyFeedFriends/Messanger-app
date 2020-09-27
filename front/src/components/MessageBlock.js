@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import cfg from '../config/general.json'
+import UserIcon from './user_icon';
+
 class MessageBlock extends Component{
     render(){
         return (
         <div className={"MessageBlock row " + (this.props.isAuthor ? "IsAuthor" : '')} >
-
-            <div className="UserIcon row">
-                <img src={cfg.img_avatar_path + this.props.chatUsers[this.props.author_id].avatar}/>
-            </div>
+            <UserIcon user_id={this.props.author_id} />
             <div className="MessageContainer">
                 <div className="MessageHeader row">
                     <span className="AuthorName">{this.props.chatUsers[this.props.author_id].username}</span>

@@ -1,6 +1,6 @@
 import {combineReducers } from 'redux';
 import { signInDefault, signUpDefault,InitializeAPPDefault, UserDataDefault, ChatsData } from './default';
-import { APP_CHANGE_FORM_STATE, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN, SIGNIN_CHANGE_PASSWORD, SIGNUP_CHANGE_DATE_BIRTH, SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_GENDER, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH, INITIALIZE_APP, CHATS_CHANGE_LIST, CHATS_CHANGE_USER_DATA, CHATS_CHANGE_CHAT_DATA, USER_CHANGE_ID } from './types';
+import { APP_CHANGE_FORM_STATE, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN, SIGNIN_CHANGE_PASSWORD, SIGNUP_CHANGE_DATE_BIRTH, SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_GENDER, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH, INITIALIZE_APP, CHATS_CHANGE_LIST, CHATS_CHANGE_USER_DATA, CHATS_CHANGE_CHAT_DATA, USER_CHANGE_ID, CHATS_CHANGE_SELECTED_CHAT, CHATS_ADD_MESSAGE_FOR_CHAT } from './types';
 
 
 function APPReducer(state = InitializeAPPDefault,actions){
@@ -74,6 +74,13 @@ function ChatsReducer(state = ChatsData,actions){
             return {...state,chatUsers:{...state.chatUsers,[actions.payload.id]:actions.payload.data}}
         case CHATS_CHANGE_CHAT_DATA:
             return {...state,chatsData:{...state.chatsData,[actions.payload.id]:actions.payload.data}}
+        case CHATS_CHANGE_SELECTED_CHAT:
+            return {...state,chatSelect:actions.payload}
+        case CHATS_ADD_MESSAGE_FOR_CHAT:
+            console.log(state.chatsData[actions.payload.id])
+            state.chatsData[actions.payload.id].messages.push(actions.payload.message)
+            return {...state,chatsData:{...state.chatsData,[actions.payload.id]:state.chatsData[actions.payload.id]}}
+                        
         default:
             return state;
     }

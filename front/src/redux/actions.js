@@ -1,4 +1,4 @@
-import {INITIALIZE_APP, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN,SIGNIN_CHANGE_PASSWORD,SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME,SIGNUP_CHANGE_GENDER,SIGNUP_CHANGE_DATE_BIRTH, APP_CHANGE_FORM_STATE, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH, CHATS_CHANGE_LIST, CHATS_CHANGE_USER_DATA, CHATS_CHANGE_CHAT_DATA, USER_CHANGE_ID} from './types'
+import {INITIALIZE_APP, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN,SIGNIN_CHANGE_PASSWORD,SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME,SIGNUP_CHANGE_GENDER,SIGNUP_CHANGE_DATE_BIRTH, APP_CHANGE_FORM_STATE, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH, CHATS_CHANGE_LIST, CHATS_CHANGE_USER_DATA, CHATS_CHANGE_CHAT_DATA, USER_CHANGE_ID, CHATS_CHANGE_SELECTED_CHAT, CHATS_ADD_MESSAGE_FOR_CHAT} from './types'
 import cfg from '../config/api.json'
 import Cookies from 'universal-cookie'
 const cookies = new Cookies()
@@ -29,6 +29,23 @@ export function ChatsAddChatInfo(id,data){
             id:id,
             data:data,
         },
+    }
+}
+
+export function ChatsChangeChatSelect(id){
+    return {
+        type:CHATS_CHANGE_SELECTED_CHAT,
+        payload:id
+    }
+}
+
+export function ChatsAddMessageForChat(chatID,message){
+    return {
+        type:CHATS_ADD_MESSAGE_FOR_CHAT,
+        payload:{
+            id:chatID,
+            message:message,
+        }
     }
 }
 
@@ -190,7 +207,15 @@ export function RequestSignUp(){
 
 
 export function RequestChatInfo(id){
+
+    ChatsAddChatInfo(id,{
+        users:[],
+        messages:[],
+    })
+    
     return async (dispatch, getState) => {
+
+
         const res = await (await fetch(cfg.api_url + 'getChatInfo',{
             method: 'POST',
             credentials:'include',
@@ -215,7 +240,6 @@ export function RequestChatInfo(id){
             users:[res.data.author.id,res.data.companion.id],
             messages:res.data.chatMessages,
         }))
-
     }
 }
 

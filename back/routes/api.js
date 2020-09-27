@@ -176,12 +176,12 @@ router.get('/v1/user',async function(req, res){
   ]); 
   response.rows[0].chats = chats.rows;
   data.data = response.rows[0]
-  console.log(data.data,'check')
   res.send(data);
 });
 
 router.post('/v1/getChatInfo',async (req, res) => {
   let chatID = req.body.id
+  console.log('chat id',chatID)
   if (!chatID){
     res.sendStatus(404)
     return;

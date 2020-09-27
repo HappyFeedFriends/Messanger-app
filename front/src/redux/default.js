@@ -34,4 +34,5 @@ export const ChatsData = {
     chatList:[],
     chatsData:{},
     chatUsers:{}, // [id]:<Object>info
+    chatSelect:-1,
 }
