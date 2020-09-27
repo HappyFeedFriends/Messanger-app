@@ -1,12 +1,17 @@
 import React, { Component, StrictMode } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import '../component_styles/ChatList.css'
 import ChatSelector from './chat_block';
+import ChatContainer from './chat_container';
+import MessageBlock from './MessageBlock';
 
 
 class Profile extends Component{
     render(){
         return (
-        <div className="row">
+        <div className="row Profile">
             <nav className="NavChatList">
 
                 <div className="Header">
@@ -18,151 +23,32 @@ class Profile extends Component{
                 </div>
 
                 <div className="ChatListContainer column">
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
 
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-                    <ChatSelector/>
-
+                {Array.prototype.map.call(this.props.chatList, value => {
+                    return <ChatSelector key={value.id} id={value.id} />;
+                }, this)}
                 </div>
 
             </nav>
 
-            <div className="ChatContentList column">
+            <ChatContainer/>
 
-                <div className="HeaderChatList">
-                    <div className="UserIcon row ChatList">
-                        <img src="img/user_avatars/default.png"/>
-                        <span>HappyFeedFriends</span>
-                    </div>
-                </div>
-                
-                <div className="Messange_container">
-
-                    <div className="MessageBlock row">
-
-                        <div className="UserIcon row">
-                            <img src="img/user_avatars/default.png"/>
-                        </div>
-                        <div className="MessageContainer">
-                            <div className="MessageHeader row">
-                                <span className="AuthorName">HappyFeedFriends</span>
-                                <span className="dateMessage">24:32</span>
-                            </div>
-                            <div className="MessageContent column">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis animi consequuntur nihil pariatur voluptates earum sit dignissimos cum porro aspernatur sunt ad ducimus, qui nemo inventore vel, magni sint impedit.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="MessageBlock row IsAuthor">
-
-                        <div className="UserIcon row">
-                            <img src="img/user_avatars/default.png"/>
-                        </div>
-                        <div className="MessageContainer">
-                            <div className="MessageHeader row">
-                                <span className="AuthorName">HappyFeedFriends</span>
-                                <span className="dateMessage">24:32</span>
-                            </div>
-                            <div className="MessageContent column">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis animi consequuntur nihil pariatur voluptates earum sit dignissimos cum porro aspernatur sunt ad ducimus, qui nemo inventore vel, magni sint impedit.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="MessageBlock row IsAuthor">
-
-                        <div className="UserIcon row">
-                            <img src="img/user_avatars/default.png"/>
-                        </div>
-                        <div className="MessageContainer">
-                            <div className="MessageHeader row">
-                                <span className="AuthorName">HappyFeedFriends</span>
-                                <span className="dateMessage">24:32</span>
-                            </div>
-                            <div className="MessageContent column">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis animi consequuntur nihil pariatur voluptates earum sit dignissimos cum porro aspernatur sunt ad ducimus, qui nemo inventore vel, magni sint impedit.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="MessageBlock row IsAuthor">
-
-                        <div className="UserIcon row">
-                            <img src="img/user_avatars/default.png"/>
-                        </div>
-                        <div className="MessageContainer">
-                            <div className="MessageHeader row">
-                                <span className="AuthorName">HappyFeedFriends</span>
-                                <span className="dateMessage">24:32</span>
-                            </div>
-                            <div className="MessageContent column">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis animi consequuntur nihil pariatur voluptates earum sit dignissimos cum porro aspernatur sunt ad ducimus, qui nemo inventore vel, magni sint impedit.
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div className="MessageBlock row">
-
-                        <div className="UserIcon row">
-                            <img src="img/user_avatars/default.png"/>
-                        </div>
-                        <div className="MessageContainer">
-                            <div className="MessageHeader row">
-                                <span className="AuthorName">HappyFeedFriends</span>
-                                <span className="dateMessage">24:32</span>
-                            </div>
-                            <div className="MessageContent column">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis animi consequuntur nihil pariatur voluptates earum sit dignissimos cum porro aspernatur sunt ad ducimus, qui nemo inventore vel, magni sint impedit.
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div className="MessageBlock row">
-
-                        <div className="UserIcon row">
-                            <img src="img/user_avatars/default.png"/>
-                        </div>
-                        <div className="MessageContainer">
-                            <div className="MessageHeader row">
-                                <span className="AuthorName">HappyFeedFriends</span>
-                                <span className="dateMessage">24:32</span>
-                            </div>
-                            <div className="MessageContent column">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis animi consequuntur nihil pariatur voluptates earum sit dignissimos cum porro aspernatur sunt ad ducimus, qui nemo inventore vel, magni sint impedit.
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div className="TextInputForChat row">
-                    <div className="AddFile"/> 
-                    <input placeholder="Начни своё сообщение с улыбки :)"/>
-                    <div className="SendBtn" >SEND</div>
-
-                </div>
-
-            </div>
 
         </div>
         )
     }
 }
 
-export default Profile;
+const mapStateToProps = state => {
+    return { 
+        chatList:state.chats.chatList, 
+    };
+};
+
+export default compose(
+    withRouter,
+    connect(
+        mapStateToProps,
+        null
+    )
+)(Profile)

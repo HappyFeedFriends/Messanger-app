@@ -1,7 +1,38 @@
-import {INITIALIZE_APP, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN,SIGNIN_CHANGE_PASSWORD,SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME,SIGNUP_CHANGE_GENDER,SIGNUP_CHANGE_DATE_BIRTH, APP_CHANGE_FORM_STATE, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH} from './types'
+import {INITIALIZE_APP, APP_CHANGE_FORM_LOADING_STATE, APP_CHANGE_LOADING_STATE, SIGNIN_CHANGE_LOGIN,SIGNIN_CHANGE_PASSWORD,SIGNUP_CHANGE_EMAIL, SIGNUP_CHANGE_PASSWORD, SIGNUP_CHANGE_PASSWORD_REPAET, SIGNUP_CHANGE_USERNAME,SIGNUP_CHANGE_GENDER,SIGNUP_CHANGE_DATE_BIRTH, APP_CHANGE_FORM_STATE, APP_CHANGE_ERROR, USER_CHANGE_USERNAME, USER_CHANGE_AVATAR, USER_CHANGE_IS_AUTH, CHATS_CHANGE_LIST, CHATS_CHANGE_USER_DATA, CHATS_CHANGE_CHAT_DATA, USER_CHANGE_ID} from './types'
 import cfg from '../config/api.json'
 import Cookies from 'universal-cookie'
 const cookies = new Cookies()
+
+// CHATS
+
+export function ChatChangeList(chats){
+    return {
+        type:CHATS_CHANGE_LIST,
+        payload:chats,
+    }
+}
+
+export function ChatAddUserData(id,data){
+    return {
+        type:CHATS_CHANGE_USER_DATA,
+        payload:{
+            id:id,
+            data:data,
+        },
+    }
+}
+
+export function ChatsAddChatInfo(id,data){
+    return {
+        type:CHATS_CHANGE_CHAT_DATA,
+        payload:{
+            id:id,
+            data:data,
+        },
+    }
+}
+
+
 // APP
 export function InitAPP(){
     return {
@@ -121,6 +152,13 @@ export function UserDataChangeAvatarURL(value){
     }
 }
 
+export function UserDataChangeID(value){
+    return {
+        type:USER_CHANGE_ID,
+        payload:value,
+    }
+}
+
 export function UserDataChangeIsAuth(value){
     return {
         type:USER_CHANGE_IS_AUTH,
@@ -145,7 +183,39 @@ export function RequestSignUp(){
         })).json()
         dispatch(ChangeErrorAPP(response.errorCode,response.error[0]))
         dispatch(ChangeFormLoadingState(false))
-         window.location.reload()
+        if (response.statusCode == 0)
+            window.location.reload()
+    }
+}
+
+
+export function RequestChatInfo(id){
+    return async (dispatch, getState) => {
+        const res = await (await fetch(cfg.api_url + 'getChatInfo',{
+            method: 'POST',
+            credentials:'include',
+            headers: {
+                'Content-Type':'application/json',
+            },
+            body: JSON.stringify({
+                id:id,
+            }),
+        })).json()
+        dispatch(ChatAddUserData(res.data.author.id,{
+            avatar:res.data.author.avatar_url,
+            username:res.data.author.username,
+        }))
+
+        dispatch(ChatAddUserData(res.data.companion.id,{
+            avatar:res.data.companion.avatar_url,
+            username:res.data.companion.username,
+        }))
+
+        dispatch(ChatsAddChatInfo(id,{
+            users:[res.data.author.id,res.data.companion.id],
+            messages:res.data.chatMessages,
+        }))
+
     }
 }
 
@@ -166,8 +236,8 @@ export function RequestSignIn(){
 
         if (response.statusCode === 0){
             cookies.set('auth',response.data['token']);
+            window.location.reload();
         }
     }
 }
-
 

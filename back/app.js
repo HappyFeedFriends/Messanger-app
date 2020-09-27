@@ -4,23 +4,29 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var apiRouter = require('./routes/api');
 var app = express();
+var cors = require('cors')
+const io = require('socket.io')();
 
+  
 app.use(logger('dev'));
-app.use(function(req, res, next) {  
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Credentials','true')
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-}); 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const corsOptions = {
+  credentials: true, // This is important.
+  origin: (origin, callback) => {
+    if(['http://localhost:3000', 'http://localhost:3006'].includes(origin))
+      return callback(null, true)
 
+      callback(new Error('Not allowed by CORS'));
+  }
+}
+
+app.use(cors(corsOptions));
 app.use('/api', apiRouter);
 app.use(function(req, res, next){
-  res.status(404).send(' ');
+  res.sendStatus(404);
 });
 
 

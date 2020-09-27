@@ -6,9 +6,9 @@ const ExampleJsonResponse = require('../config/data_format.json');
 const sha256 = require('js-sha256');
 const db = require('../util/database');
 const validator = require('validator');
+const { route } = require('../app');
 
 router.post('/auth/signin',async function(req, res){
-  const send = res.status(200)
   const data = { ...ExampleJsonResponse };
   const {username, password} = req.body;
   if (!username || !password) {
@@ -114,7 +114,7 @@ router.post('/auth/signup',async function(req, res){
 
   const email_count = response.rows.filter(row => row.email.toLowerCase() == email.toLowerCase()).length;
   const username_count = response.rows.filter(row => row.login.toLowerCase() == username.toLowerCase()).length;
-
+ 
   if (email_count >  0){
     data.statusCode = 1;
     data.errorCode = 2
@@ -144,13 +144,12 @@ router.post('/auth/signup',async function(req, res){
   res.send(data)
 
 });
- 
+
 router.use('/v1',(req, res, next) => {
   let isAuth = !!req.cookies.auth;
-  console.log(req.cookies.auth)
   if (req.cookies.auth){
     jwt.verify(req.cookies.auth,SECRET_KEY,(err) => {
-        isAuth = !!!err;
+        isAuth = err === null;
     })
   }
   if (isAuth)
@@ -159,17 +158,65 @@ router.use('/v1',(req, res, next) => {
     res.sendStatus(401)
   }
 });
+
 router.get('/v1/user',async function(req, res){
-  let data = await jwt.verify(req.cookies.auth,SECRET_KEY)
-  let userID = data.id
+  let jwtV = await jwt.verify(req.cookies.auth,SECRET_KEY)
+  let userID = jwtV.id
+  const data = { ...ExampleJsonResponse }
   let response = await db.query(`SELECT id, username,avatar_url 
 	FROM main."user"
 	where id = $1`,[
     userID,
   ]);
-  response.rows[0].avatar_url = 'img/user_avatars/' + response.rows[0].avatar_url
-  res.status(200).send(response.rows[0]);
+
+  let chats = await db.query(`SELECT id, author_id,companion_id 
+	FROM main."message_channel"
+	where author_id = $1 or companion_id = $1`,[
+    userID,
+  ]); 
+  response.rows[0].chats = chats.rows;
+  data.data = response.rows[0]
+  console.log(data.data,'check')
+  res.send(data);
 });
+
+router.post('/v1/getChatInfo',async (req, res) => {
+  let chatID = req.body.id
+  if (!chatID){
+    res.sendStatus(404)
+    return;
+  }
+  const data = { ...ExampleJsonResponse }
+  let channel_data = (await db.query(`SELECT id, author_id,companion_id 
+	FROM main."message_channel"
+	where id = $1`,[
+    chatID,
+  ])).rows[0];
+  let author_data = (await db.query(`SELECT id, username,avatar_url 
+	FROM main."user"
+	where id = $1`,[
+    channel_data.author_id,
+  ])).rows[0];
+
+  let companiom_data = (await db.query(`SELECT id, username,avatar_url 
+	FROM main."user"
+	where id = $1`,[
+    channel_data.companion_id,
+  ])).rows[0];
+
+  let chat_messages = (await db.query(`SELECT message_channel_id, id, content, author_id
+	FROM main.messages where message_channel_id = $1`,[
+    chatID,
+  ])).rows
+
+  const _data = {
+    author:author_data,
+    companion:companiom_data,
+    chatMessages:chat_messages,
+  }
+  data.data = _data
+  res.send(data)
+})
 
 
 module.exports = router;

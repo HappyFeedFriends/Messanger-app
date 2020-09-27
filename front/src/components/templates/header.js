@@ -17,7 +17,7 @@ class Header extends Component {
                         <span>{this.props.username}</span>
                     </div>
                     <div className="user_settings row"> 
-                        <img src="img/settings.png" />
+                        <img src="/img/settings.png" />
                     </div>
                 </Link>
             </li>
