@@ -7,7 +7,10 @@ const sha256 = require('js-sha256');
 const db = require('../util/database');
 const validator = require('validator');
 const { route } = require('../app');
+const fetch = require('node-fetch');
+const Cookies = require('universal-cookie')
 
+ 
 router.post('/auth/signin',async function(req, res){
   const data = { ...ExampleJsonResponse };
   const {username, password} = req.body;
@@ -37,6 +40,7 @@ router.post('/auth/signin',async function(req, res){
   data.data = {
     token:jwt.sign({id:userFind[0].id}, SECRET_KEY)
   } 
+
   res.send(data)
   
   
@@ -144,6 +148,64 @@ router.post('/auth/signup',async function(req, res){
   res.send(data)
 
 });
+ 
+router.get('/auth/redirect_yandex',async (req,res) => {
+
+  const params = new URLSearchParams();
+  params.append('grant_type', 'authorization_code');
+  params.append('code', req.query.code);
+  params.append('client_id', '189f73ed01794a3bb5b956312553b594');
+  params.append('client_secret', '201d29fad6984145a77d408638920988');
+
+  const data = await (await fetch('https://oauth.yandex.ru/token', {
+    method: 'post',
+    body:params,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  })).json()
+
+  if (!data.access_token){
+    return res.redirect('/api/auth/yandex') // TOOLS MODE ONLY
+  }
+ 
+  const personalInfo = await (await fetch(`https://login.yandex.ru/info?format=json`,{
+    headers:{
+      Authorization: `OAuth ${data.access_token}`
+    }
+  })).json()
+
+  let user = (await db.query(`SELECT id, username,avatar_url 
+	FROM main."user"
+	where username = $1`,[
+    personalInfo.client_id,
+  ])).rows
+
+  if (user.length < 1){
+    let data = (await db.query(`INSERT INTO main."user"(
+      username, password, email, avatar_url, login,gender,dateBirth)
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,[
+          personalInfo.display_name,
+          sha256(personalInfo.client_id),
+          personalInfo.default_email,
+          'http://avatars.mds.yandex.net/get-yapic/' + personalInfo.default_avatar_id,
+          personalInfo.client_id,
+          personalInfo.sex === 'male' ? 0 : 1,
+          personalInfo.birthday || new Date(),
+    ])).rows[0]
+
+    res.cookie('auth',jwt.sign({id:data.id}, SECRET_KEY))
+  }else{
+    res.cookie('auth',jwt.sign({id:user[0].id}, SECRET_KEY))
+  }
+  
+  res.redirect('http://localhost:3006')
+
+
+
+})
+
+router.get('/auth/yandex',(req,res) => {
+  return res.redirect(`https://oauth.yandex.ru/authorize?response_type=code&client_id=189f73ed01794a3bb5b956312553b594&redirect_uri=http://localhost:3000/api/auth/redirect_yandex`)
+})
 
 router.use('/v1',(req, res, next) => {
   let isAuth = !!req.cookies.auth;
@@ -181,7 +243,6 @@ router.get('/v1/user',async function(req, res){
 
 router.post('/v1/getChatInfo',async (req, res) => {
   let chatID = req.body.id
-  console.log('chat id',chatID)
   if (!chatID){
     res.sendStatus(404)
     return;

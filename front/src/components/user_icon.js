@@ -1,6 +1,5 @@
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
-import cfg from '../config/general.json'
 
 class UserIcon extends Component {
 
@@ -8,7 +7,7 @@ class UserIcon extends Component {
 
         return (
         <div className={"UserIcon OnlineState" + Number(this.props.chatUsers[ this.props.user_id ].IsOnline)}>
-            <img src={ cfg.img_avatar_path + this.props.chatUsers[ this.props.user_id ].avatar }/>
+            <img src={this.props.chatUsers[ this.props.user_id ].avatar }/>
         </div>
         )
 

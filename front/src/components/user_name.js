@@ -1,6 +1,5 @@
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
-import cfg from '../config/general.json'
 
 class UserName extends Component {
 

@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "bootstrap": "^4.5.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
@@ -13,6 +14,7 @@
     "react-scripts": "3.4.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "socket.io-client": "^2.3.1",
     "universal-cookie": "^4.0.3"
   },
   "scripts": {
@@ -24,11 +26,11 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "http://localhost:3001/",
+  "proxy": "http://localhost:3006/",
   "browserslist": {
     "production": [
       ">0.2%",
-      "not dead",
+      "not dead", 
       "not op_mini all"
     ],
     "development": [

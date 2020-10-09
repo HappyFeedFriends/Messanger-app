@@ -11,13 +11,11 @@ module.exports.connection = (client,io) => {
 
         const jwtDecoded =  jwt.verify(token,SECRET_KEY)
         const authorID = jwtDecoded.id
-        console.log(client.request.headers)
-        const channel_id = client.request.headers.referer.split('/').pop()
-        console.log(channel_id)
+
         const returnData = (await db.query(`INSERT INTO 
             main.messages( message_channel_id, content, author_id ) VALUES ($1, $2, $3)
             RETURNING id,message_channel_id, content, author_id`,
-            [channel_id,data.data,authorID]
+            [data.channel_id,data.data,authorID]
         )).rows[0];
 
         io.emit('on_message', returnData);

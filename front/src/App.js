@@ -15,7 +15,7 @@ import Header from './components/templates/header.js';
 import cfg from './config/api.json'
 import { ChangeFormState, ChangeLoadingState, UserDataChangeAvatarURL, UserDataChangeUserName, UserDataChangeIsAuth, ChatChangeList, UserDataChangeID } from './redux/actions.js';
 import Profile from './components/profile.js';
-import cfg_general from './config/general.json'
+
 class App extends Component {
   componentDidMount() {
     document.title = 'Chat RUS'
@@ -23,7 +23,7 @@ class App extends Component {
     fetch(cfg.api_url + 'user',{credentials:'include'})
     .then(response => response.json())
     .then(res => {
-        this.props.UserDataChangeAvatarURL(cfg_general.img_avatar_path + res.data.avatar_url)
+        this.props.UserDataChangeAvatarURL(res.data.avatar_url)
         this.props.UserDataChangeUserName(res.data.username)
         this.props.UserDataChangeID(res.data.id)
         this.props.ChatChangeList(res.data.chats)

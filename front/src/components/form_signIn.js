@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RequestSignIn, SignInChangeLogin, SignInChangePassword } from '../redux/actions';
+import { Link } from "react-router-dom"
+
 class SignIn extends Component{
 
 
@@ -24,6 +26,10 @@ class SignIn extends Component{
                     <div className="inputContainer"><input type="submit" value="Войти"></input></div>
                 </div>
 
+            </div>
+
+            <div className="links-auth row">
+                <a href="http://localhost:3000/api/auth/yandex" className="yandex"/>
             </div>
         </form>
         );

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import Loader from './loader';
-import cfg from '../config/general.json'
 import MessageBlock from './MessageBlock';
 import { ChatsAddMessageForChat, ChatsChangeChatSelect, RequestChatInfo } from '../redux/actions';
 import UserIcon from './user_icon';
@@ -36,8 +35,14 @@ class ChatContainer extends Component {
 
     OnSubmitText(e){
         e.preventDefault();
+
+        const location = this.props.location.pathname
+        const isChannel = location.search('/channel/') !== -1
+        const channelID = location.split('/').pop()
+        if (!isChannel) return
         this.props.socket.emit('send_message',{
-            data:this.state.text
+            data:this.state.text,
+            channel_id:channelID
         })
         this.refInput.value = ''
     }

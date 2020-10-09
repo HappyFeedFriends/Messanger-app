@@ -2,7 +2,6 @@ import React,{ Component } from 'react';
 import { connect } from 'react-redux';
 import { ChatAddUserData, ChatsAddChatInfo, ChatsChangeChatSelect, RequestChatInfo } from '../redux/actions';
 import Loader from './loader';
-import cfg from '../config/general.json'
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import UserName from './user_name';

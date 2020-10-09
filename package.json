@@ -6,7 +6,5 @@
     "server": "npm start --prefix back",
     "client": "npm start --prefix front"
   },
-  "dependencies": {
-    "socket.io-client": "^2.3.0"
-  }
+  "dependencies": {}
 }

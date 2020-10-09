@@ -12,10 +12,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+ 
 const corsOptions = {
   credentials: true, // This is important.
   origin: (origin, callback) => {
+    if (!origin) return callback(null,true)
     if(['http://localhost:3000', 'http://localhost:3006'].includes(origin))
       return callback(null, true)
 
