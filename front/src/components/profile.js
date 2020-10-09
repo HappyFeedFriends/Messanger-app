@@ -5,11 +5,19 @@ import { compose } from 'redux';
 import '../component_styles/ChatList.css'
 import ChatSelector from './chat_block';
 import ChatContainer from './chat_container';
-import MessageBlock from './MessageBlock';
-
+// import MessageBlock from './MessageBlock';
+import cfg from '../config/api.json'
 
 class Profile extends Component{
+    
+    addChannel(){
+            
+        fetch(cfg.api_url + 'addChannel',{credentials:'include'})
+
+    }
+    
     render(){
+
         return (
         <div className="row Profile">
             <nav className="NavChatList">
@@ -27,6 +35,8 @@ class Profile extends Component{
                 {Array.prototype.map.call(this.props.chatList, value => {
                     return <ChatSelector key={value.id} id={value.id} />;
                 }, this)}
+
+                    <div onClick={() => this.addChannel()} className="addChannel"/>
                 </div>
 
             </nav>

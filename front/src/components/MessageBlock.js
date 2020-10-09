@@ -4,6 +4,9 @@ import UserIcon from './user_icon';
 
 class MessageBlock extends Component{
     render(){
+
+        console.log(this.props.chatUsers,this.props.author_id)
+
         return (
         <div className={"MessageBlock row " + (this.props.isAuthor ? "IsAuthor" : '')} >
             <UserIcon user_id={this.props.author_id} />

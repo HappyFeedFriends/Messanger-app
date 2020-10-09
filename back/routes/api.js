@@ -222,8 +222,14 @@ router.use('/v1',(req, res, next) => {
 });
 
 router.get('/v1/user',async function(req, res){
-  let jwtV = await jwt.verify(req.cookies.auth,SECRET_KEY)
-  let userID = jwtV.id
+  let userID = -1
+  try {
+    let jwtV = await jwt.verify(req.cookies.auth,SECRET_KEY)
+    userID = jwtV.id
+  } catch (error) {
+    console.log(error)
+    return res.send(401)
+  }
   const data = { ...ExampleJsonResponse }
   let response = await db.query(`SELECT id, username,avatar_url 
 	FROM main."user"
@@ -279,5 +285,24 @@ router.post('/v1/getChatInfo',async (req, res) => {
   res.send(data)
 })
 
+
+router.get('/v1/addChannel',async function(req, res){
+
+  try {
+    let jwtV = await jwt.verify(req.cookies.auth,SECRET_KEY)
+    let userID = jwtV.id
+
+    await db.query("INSERT INTO main.message_channel(author_id, companion_id)VALUES ($1, $2)",[
+      93,
+      userID // DEFAULT
+    ]);
+    console.log('test')
+    return res.send('');
+  } catch (error) {
+    console.log(error)
+    return res.send(401)
+  }
+
+})
 
 module.exports = router;
