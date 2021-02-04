@@ -204,7 +204,25 @@ export function RequestSignUp(){
             window.location.reload()
     }
 }
-
+export function RequestSearchUser(keyWord){
+    return async (dispatch, getState) => {
+        const { signUpForm } = getState()
+        dispatch(ChangeFormLoadingState(true))
+        dispatch(ChangeErrorAPP(0,''))
+        const response = await (await fetch(cfg.api_url + 'searchUsers',{
+            method: 'POST',
+            credentials:'include',
+            headers: {
+                'Content-Type':'application/json',
+            },
+            body: JSON.stringify({
+                keyWord : keyWord,
+            }),
+        })).json()
+        dispatch(ChangeErrorAPP(response.errorCode,response.error[0]))
+        dispatch(ChangeFormLoadingState(false))
+    }
+}
 
 export function RequestChatInfo(id){
 

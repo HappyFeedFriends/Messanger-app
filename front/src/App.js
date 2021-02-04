@@ -37,6 +37,12 @@ class App extends Component {
 
     })
 
+    this.props.socket.on('update_chats',this.OnUpdateChats);
+
+  }
+
+  OnUpdateChats(chats){
+    this.props.ChatChangeList(chats)
   }
 
   render() {
@@ -65,6 +71,7 @@ const mapStateToProps = state => {
   return { 
       Loading:state.app.IsLoading, 
       formOpen:state.app.IsOpenForms,
+      socket:state.app.socket,
   };
 };
 

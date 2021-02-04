@@ -7,12 +7,14 @@ import ChatSelector from './chat_block';
 import ChatContainer from './chat_container';
 // import MessageBlock from './MessageBlock';
 import cfg from '../config/api.json'
+import { ChangeFormState } from '../redux/actions';
 
 class Profile extends Component{
     
     addChannel(){
             
-        fetch(cfg.api_url + 'addChannel',{credentials:'include'})
+        // fetch(cfg.api_url + 'addChannel',{credentials:'include'})
+        this.props.ChangeFormState(true,2);
 
     }
     
@@ -59,6 +61,6 @@ export default compose(
     withRouter,
     connect(
         mapStateToProps,
-        null
+        {ChangeFormState},
     )
 )(Profile)

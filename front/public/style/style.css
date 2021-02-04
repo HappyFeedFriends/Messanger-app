@@ -342,12 +342,14 @@ header{
 .ul_links > li .UserName span:hover{
     color: #0088cc;
 }
+.UsersContainer span,
 .ul_links > li .UserName span{
     color: black;
     transition: .33s;
     letter-spacing: 0;
     font-family: 'Rubik', sans-serif;
 }
+
 .links-auth > a.yandex{
     
     background-image: url('../img/yandex_icon.png');
@@ -366,4 +368,10 @@ header{
 }
 .links-auth{
 
+}
+.ModalIconForms form .UsersContainer span{
+    font-weight: normal;
+    letter-spacing: normal;
+    font-size: 18px;
+    margin-left: 10px;
 }

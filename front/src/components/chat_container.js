@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import Loader from './loader';
 import MessageBlock from './MessageBlock';
-import { ChatsAddMessageForChat, ChatsChangeChatSelect, RequestChatInfo } from '../redux/actions';
+import { ChatsAddMessageForChat, ChatsChangeChatSelect } from '../redux/actions';
 import UserIcon from './user_icon';
 
 class ChatContainer extends Component {
@@ -21,7 +21,6 @@ class ChatContainer extends Component {
     componentDidMount(){
 
         this.props.socket.on('on_message',(data) => {
-            console.log(data)
             this.props.ChatsAddMessageForChat(data.message_channel_id,data)
             this.scrollToBottom()
         })

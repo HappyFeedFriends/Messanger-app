@@ -5,7 +5,7 @@
 -- Dumped from database version 12.4
 -- Dumped by pg_dump version 12.4
 
--- Started on 2020-10-09 11:29:51
+-- Started on 2020-09-11 14:05:49
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 6 (class 2615 OID 24618)
+-- TOC entry 6 (class 2615 OID 16394)
 -- Name: main; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -29,7 +29,7 @@ CREATE SCHEMA main;
 ALTER SCHEMA main OWNER TO postgres;
 
 --
--- TOC entry 2858 (class 0 OID 0)
+-- TOC entry 2851 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: SCHEMA main; Type: COMMENT; Schema: -; Owner: postgres
 --
@@ -42,21 +42,20 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 203 (class 1259 OID 24619)
+-- TOC entry 203 (class 1259 OID 16395)
 -- Name: message_channel; Type: TABLE; Schema: main; Owner: postgres
 --
 
 CREATE TABLE main.message_channel (
     id bigint NOT NULL,
-    author_id bigint NOT NULL,
-    companion_id bigint
+    author_id bigint NOT NULL
 );
 
 
 ALTER TABLE main.message_channel OWNER TO postgres;
 
 --
--- TOC entry 204 (class 1259 OID 24622)
+-- TOC entry 204 (class 1259 OID 16398)
 -- Name: message_channel_id_seq; Type: SEQUENCE; Schema: main; Owner: postgres
 --
 
@@ -71,7 +70,7 @@ CREATE SEQUENCE main.message_channel_id_seq
 ALTER TABLE main.message_channel_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2859 (class 0 OID 0)
+-- TOC entry 2852 (class 0 OID 0)
 -- Dependencies: 204
 -- Name: message_channel_id_seq; Type: SEQUENCE OWNED BY; Schema: main; Owner: postgres
 --
@@ -80,39 +79,24 @@ ALTER SEQUENCE main.message_channel_id_seq OWNED BY main.message_channel.id;
 
 
 --
--- TOC entry 208 (class 1259 OID 32874)
--- Name: messages_id_seq; Type: SEQUENCE; Schema: main; Owner: postgres
---
-
-CREATE SEQUENCE main.messages_id_seq
-    START WITH 0
-    INCREMENT BY 1
-    MINVALUE 0
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE main.messages_id_seq OWNER TO postgres;
-
---
--- TOC entry 205 (class 1259 OID 24624)
+-- TOC entry 205 (class 1259 OID 16400)
 -- Name: messages; Type: TABLE; Schema: main; Owner: postgres
 --
 
 CREATE TABLE main.messages (
     message_channel_id bigint NOT NULL,
-    id bigint DEFAULT nextval('main.messages_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     content text NOT NULL,
     author_id bigint NOT NULL,
-    date_created date DEFAULT now() NOT NULL,
-    date_update date DEFAULT now() NOT NULL
+    date_created date NOT NULL,
+    date_update date NOT NULL
 );
 
 
 ALTER TABLE main.messages OWNER TO postgres;
 
 --
--- TOC entry 206 (class 1259 OID 24630)
+-- TOC entry 206 (class 1259 OID 16406)
 -- Name: user; Type: TABLE; Schema: main; Owner: postgres
 --
 
@@ -125,15 +109,14 @@ CREATE TABLE main."user" (
     login text NOT NULL,
     datebirth date NOT NULL,
     gender smallint NOT NULL,
-    date_created date DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "IsOnline" boolean DEFAULT false NOT NULL
+    date_created date DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
 ALTER TABLE main."user" OWNER TO postgres;
 
 --
--- TOC entry 207 (class 1259 OID 24638)
+-- TOC entry 207 (class 1259 OID 16413)
 -- Name: user_id_seq; Type: SEQUENCE; Schema: main; Owner: postgres
 --
 
@@ -149,7 +132,7 @@ CREATE SEQUENCE main.user_id_seq
 ALTER TABLE main.user_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2860 (class 0 OID 0)
+-- TOC entry 2853 (class 0 OID 0)
 -- Dependencies: 207
 -- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: main; Owner: postgres
 --
@@ -158,7 +141,7 @@ ALTER SEQUENCE main.user_id_seq OWNED BY main."user".id;
 
 
 --
--- TOC entry 2702 (class 2604 OID 24640)
+-- TOC entry 2700 (class 2604 OID 16415)
 -- Name: message_channel id; Type: DEFAULT; Schema: main; Owner: postgres
 --
 
@@ -166,41 +149,32 @@ ALTER TABLE ONLY main.message_channel ALTER COLUMN id SET DEFAULT nextval('main.
 
 
 --
--- TOC entry 2708 (class 2604 OID 24641)
+-- TOC entry 2702 (class 2604 OID 16416)
 -- Name: user id; Type: DEFAULT; Schema: main; Owner: postgres
 --
 
 ALTER TABLE ONLY main."user" ALTER COLUMN id SET DEFAULT nextval('main.user_id_seq'::regclass);
 
 --
--- TOC entry 2861 (class 0 OID 0)
+-- TOC entry 2854 (class 0 OID 0)
 -- Dependencies: 204
 -- Name: message_channel_id_seq; Type: SEQUENCE SET; Schema: main; Owner: postgres
 --
 
-SELECT pg_catalog.setval('main.message_channel_id_seq', 10, true);
+SELECT pg_catalog.setval('main.message_channel_id_seq', 1, false);
 
 
 --
--- TOC entry 2862 (class 0 OID 0)
--- Dependencies: 208
--- Name: messages_id_seq; Type: SEQUENCE SET; Schema: main; Owner: postgres
---
-
-SELECT pg_catalog.setval('main.messages_id_seq', 154, true);
-
-
---
--- TOC entry 2863 (class 0 OID 0)
+-- TOC entry 2855 (class 0 OID 0)
 -- Dependencies: 207
 -- Name: user_id_seq; Type: SEQUENCE SET; Schema: main; Owner: postgres
 --
 
-SELECT pg_catalog.setval('main.user_id_seq', 119, true);
+SELECT pg_catalog.setval('main.user_id_seq', 77, true);
 
 
 --
--- TOC entry 2712 (class 2606 OID 24643)
+-- TOC entry 2706 (class 2606 OID 16418)
 -- Name: message_channel message_channel_pkey; Type: CONSTRAINT; Schema: main; Owner: postgres
 --
 
@@ -209,7 +183,7 @@ ALTER TABLE ONLY main.message_channel
 
 
 --
--- TOC entry 2715 (class 2606 OID 24645)
+-- TOC entry 2709 (class 2606 OID 16420)
 -- Name: messages messages_pkey; Type: CONSTRAINT; Schema: main; Owner: postgres
 --
 
@@ -218,7 +192,7 @@ ALTER TABLE ONLY main.messages
 
 
 --
--- TOC entry 2717 (class 2606 OID 24647)
+-- TOC entry 2711 (class 2606 OID 16422)
 -- Name: user user_pkey; Type: CONSTRAINT; Schema: main; Owner: postgres
 --
 
@@ -227,7 +201,7 @@ ALTER TABLE ONLY main."user"
 
 
 --
--- TOC entry 2710 (class 1259 OID 24648)
+-- TOC entry 2704 (class 1259 OID 16423)
 -- Name: fki_author_id; Type: INDEX; Schema: main; Owner: postgres
 --
 
@@ -235,7 +209,7 @@ CREATE INDEX fki_author_id ON main.message_channel USING btree (author_id);
 
 
 --
--- TOC entry 2713 (class 1259 OID 24649)
+-- TOC entry 2707 (class 1259 OID 16424)
 -- Name: fki_message_channel_id; Type: INDEX; Schema: main; Owner: postgres
 --
 
@@ -243,7 +217,7 @@ CREATE INDEX fki_message_channel_id ON main.messages USING btree (message_channe
 
 
 --
--- TOC entry 2718 (class 2606 OID 24650)
+-- TOC entry 2712 (class 2606 OID 16425)
 -- Name: message_channel author_id; Type: FK CONSTRAINT; Schema: main; Owner: postgres
 --
 
@@ -252,7 +226,7 @@ ALTER TABLE ONLY main.message_channel
 
 
 --
--- TOC entry 2719 (class 2606 OID 24655)
+-- TOC entry 2713 (class 2606 OID 16430)
 -- Name: messages author_id; Type: FK CONSTRAINT; Schema: main; Owner: postgres
 --
 
@@ -261,7 +235,7 @@ ALTER TABLE ONLY main.messages
 
 
 --
--- TOC entry 2720 (class 2606 OID 24660)
+-- TOC entry 2714 (class 2606 OID 16435)
 -- Name: messages message_channel_id; Type: FK CONSTRAINT; Schema: main; Owner: postgres
 --
 
@@ -269,7 +243,7 @@ ALTER TABLE ONLY main.messages
     ADD CONSTRAINT message_channel_id FOREIGN KEY (message_channel_id) REFERENCES main.messages(id) NOT VALID;
 
 
--- Completed on 2020-10-09 11:29:51
+-- Completed on 2020-09-11 14:05:50
 
 --
 -- PostgreSQL database dump complete

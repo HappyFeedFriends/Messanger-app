@@ -23,7 +23,7 @@ app.set('port', port);
 
 var server = http.createServer(app);
 const io = socket(server);
-
+global.socketIO = io;
 io.on('connection',(client) => {
   connection(client,io)
 })

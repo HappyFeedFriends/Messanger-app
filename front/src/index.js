@@ -14,7 +14,7 @@ const store = createStore(
   rootReducer,
   compose(
     applyMiddleware(thunk),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
   )
 )
 store.dispatch(InitAPP())
@@ -25,5 +25,5 @@ ReactDOM.render((
      <App/>
    </Router>
    </Provider>
- ), document.getElementById('root')
+ ), document.getElementById('root') 
 );

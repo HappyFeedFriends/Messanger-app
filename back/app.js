@@ -22,7 +22,7 @@ const corsOptions = {
 
       callback(new Error('Not allowed by CORS'));
   }
-}
+} 
 
 app.use(cors(corsOptions));
 app.use('/api', apiRouter);

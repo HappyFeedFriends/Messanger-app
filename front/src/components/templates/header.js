@@ -1,15 +1,23 @@
 import React, { Component, StrictMode } from 'react';
 import { connect } from 'react-redux';
 import { ChangeFormState } from '../../redux/actions';
-import { Link } from "react-router-dom"
+import { Link,useHistory } from "react-router-dom"
+import Cookies from 'universal-cookie'
 
 
 class Header extends Component {
+
+    Logout(){
+        const cookie = new Cookies()
+        cookie.remove('auth');
+        window.location = '/'
+    }
+
     ComponentHeader(){
         if (this.props.is_auth) {
             return (    
             <li>
-                <Link to="/profile" className="UserProfile row">
+                <Link onClick={ this.Logout } className="UserProfile row">
                     <div className="user_avatar">
                         <img src={this.props.avatarURL} alt=""/>
                     </div>

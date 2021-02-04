@@ -9,7 +9,7 @@ const validator = require('validator');
 const { route } = require('../app');
 const fetch = require('node-fetch');
 const Cookies = require('universal-cookie')
-
+var socket = require('socket.io');
  
 router.post('/auth/signin',async function(req, res){
   const data = { ...ExampleJsonResponse };
@@ -186,11 +186,13 @@ router.get('/auth/redirect_yandex',async (req,res) => {
           personalInfo.display_name,
           sha256(personalInfo.client_id),
           personalInfo.default_email,
-          'http://avatars.mds.yandex.net/get-yapic/' + personalInfo.default_avatar_id,
+          'http://avatars.mds.yandex.net/get-yapic/' + personalInfo.default_avatar_id + '/islands-middle',
           personalInfo.client_id,
           personalInfo.sex === 'male' ? 0 : 1,
           personalInfo.birthday || new Date(),
     ])).rows[0]
+
+    console.log(personalInfo)
 
     res.cookie('auth',jwt.sign({id:data.id}, SECRET_KEY))
   }else{
@@ -214,6 +216,7 @@ router.use('/v1',(req, res, next) => {
         isAuth = err === null;
     })
   }
+
   if (isAuth)
     next();
   else {
@@ -221,13 +224,38 @@ router.use('/v1',(req, res, next) => {
   }
 });
 
+router.post('/v1/searchUsers',async (req,res) => {
+  let userID = -1
+  const searchUser = req.body.keyWord
+  console.log(searchUser)
+  if (!searchUser)
+    return res.send(404);
+  const data = { ...ExampleJsonResponse }
+
+  let response = await db.query(`SELECT id,username,avatar_url 
+	FROM main."user"
+	where username ILIKE '%' || $1 || '%' `,[ 
+    searchUser,
+  ]);
+  console.log(response.rows)
+  if (response.rows.length < 1){
+    data.statusCode = 1;
+    data.errorCode = 30;
+    data.error = ['Пользовател не найден'];
+    return res.send(data);
+  }
+  data.data = response.rows
+
+  return res.send(data)
+
+})
+
 router.get('/v1/user',async function(req, res){
   let userID = -1
   try {
     let jwtV = await jwt.verify(req.cookies.auth,SECRET_KEY)
     userID = jwtV.id
   } catch (error) {
-    console.log(error)
     return res.send(401)
   }
   const data = { ...ExampleJsonResponse }
@@ -242,8 +270,9 @@ router.get('/v1/user',async function(req, res){
 	where author_id = $1 or companion_id = $1`,[
     userID,
   ]); 
-  response.rows[0].chats = chats.rows;
-  data.data = response.rows[0]
+  let dataB = {...response.rows[0]}
+  dataB.chats = chats.rows;
+  data.data = dataB
   res.send(data);
 });
 
@@ -286,20 +315,30 @@ router.post('/v1/getChatInfo',async (req, res) => {
 })
 
 
-router.get('/v1/addChannel',async function(req, res){
+router.post('/v1/addChannel',async function(req, res){
 
   try {
     let jwtV = await jwt.verify(req.cookies.auth,SECRET_KEY)
     let userID = jwtV.id
 
-    await db.query("INSERT INTO main.message_channel(author_id, companion_id)VALUES ($1, $2)",[
-      93,
-      userID // DEFAULT
+    const room_id = await db.query("INSERT INTO main.message_channel(author_id, companion_id) VALUES ($1, $2) RETURNING id",[
+      userID,
+      req.body.userID,
     ]);
-    console.log('test')
-    return res.send('');
+
+    let chats = await db.query(`SELECT id, author_id,companion_id 
+    FROM main."message_channel"
+    where author_id = $1 or companion_id = $1`,[
+      userID,
+    ]); 
+    console.log(room_id.rows) 
+    if (!global.socketIO.sockets.connected[req.cookies.io]) throw('socket not found');
+    
+    global.socketIO.sockets.connected[req.cookies.io].join('room_' + room_id.rows[0].id)
+    const data = { ...ExampleJsonResponse }
+    data.data = chats.rows
+    return res.send(data);
   } catch (error) {
-    console.log(error)
     return res.send(401)
   }
 
